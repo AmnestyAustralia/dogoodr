@@ -1,3 +1,18 @@
+#' DG Actions
+#'
+#' Returns a feed the latest action log entries for the entire account. It includes the campaign, action, and form data submitted by the supporter.
+#'
+#' @param since time object representing the earliest action to be returned
+#' @param campaign_id vector of campaign id integers to be returned
+#' @param starting_with should the return list be arranged to start with the earliest or latest action
+#' @param process_pagination if TRUE function will make several requests to download each page of actions, or should it only return the first 100
+#'
+#' @return tibble with nested columns for campaign, action, form_data
+#' @export
+#'
+#' @examples
+#' minimum_time <- lubridate::now() - lubridate::days(5)
+#' dg_actions(since=minimum_time, campaign_id=5618, starting_with="latest", process_pagination=FALSE)
 dg_actions <- function(since=this_morning(), campaign_id=NULL, starting_with=c("earliest", "latest"), process_pagination=FALSE){
   request_params <-
     list(since = encode_time_param(since),

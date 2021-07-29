@@ -1,15 +1,21 @@
 # dogoodr
 dogooder.co API wrapper package for R
 
-This package is under active development, which focuses on the DG API functionality found at https://[YOUR-DG-INSTANCE-PREFIX].good.do/developer/
+### Package Description
+
+NOTE: When reading below, DG_SUBDOMAIN is "organisation" if your portal is located at:
+https://organisation.good.do/developer/
+
+This package is a WIP wrapper for the API functionality at the developer portal:
+https://[DG_SUBDOMAIN].good.do/developer/
 
 ### Setup
 
-Set your DoGooder API token (including the "Token" text) to the env var DG_TOKEN
-Set your DoGooder instance subdomain (ie. https://[THIS].good.do/developer/) to DG_SUBDOMAIN
+Set environmental variables...
+DG_SUBDOMAIN = organisation
+DG_TOKEN = Token cousbRNzkLd8JkiDbh8d0ta99KIkli928yVpnXub
 
-You should be able to find your API token on your developer portal:
-https://[YOUR-DG-INSTANCE-PREFIX].good.do/developer/
+You should be able to find your API token on your developer portal, see the link in the package description.
 
 ### Syntax
 
