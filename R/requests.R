@@ -4,17 +4,15 @@
 #'
 #' @param endpoint name of endpoint
 #' @param out_class class to use for the parse_response request
-#' @param clean_response whether to run parse_response on the request, or
-#' @param query_param
-#' @param process_pagination
-#' @param ...
-#'
-#' @return
+#' @param clean_response whether to run parse_response on the request
+#' @param query_param URL parameters to send as part of the request
+#' @param process_pagination if there are multiple response pages, should whether to send multiple requests
+#' @return a response list
 #' @export
-#'
+#' @importFrom httr modify_url add_headers GET stop_for_status http_type
 #' @examples
-#' dg_api(endpoint="activity_feed", out_class="", clean_response=TRUE, query_param=, process_pagination=FALSE)
-dg_api <- function(endpoint, out_class, clean_response = FALSE, query_param = list(), process_pagination=FALSE, ...){
+#' dg_api(endpoint="action-log-feed", out_class="actionfeed", query_param = list(campaign_ids=5618), clean_response=TRUE, process_pagination=TRUE)
+dg_api <- function(endpoint, out_class, clean_response = FALSE, query_param = list(), process_pagination=FALSE){
   path <- glue("/api/{endpoint}")
   url <- httr::modify_url(glue("http://{dogooder_subdomain()}.good.do"), path = path)
   resp <- httr::GET(url, query = query_param, httr::add_headers(Authorization = dogooder_token()))
@@ -119,7 +117,7 @@ parse_response <- function(x) {
 #' @param x response list
 #' @return tibble
 #' @importFrom dplyr mutate
-#' @importFrom lubridate::ymd_hms
+#' @importFrom lubridate ymd_hms
 parse_response.actionfeed <- function(x){
   stack_results(x) %>%
     dplyr::mutate(created = lubridate::ymd_hms(created))
@@ -134,8 +132,7 @@ parse_response.campaigns <- function(x){
 #' Returns list items within a level that aren't lists
 #'
 #' @param x a list
-#' @importFrom purrr::vec_depth
-#'
+#' @importFrom purrr vec_depth
 #' @return list items without sublists
 flat_values <- function(x){
   x[purrr::map_int(x, purrr::vec_depth) < 2]

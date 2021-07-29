@@ -7,7 +7,7 @@
 #' @param env environment with variables to concatenate
 #'
 #' @return a console log
-#' @importFrom glue
+#' @importFrom glue glue
 polite_message <- function(msg, silent=TRUE, env=parent.frame()){
   if(!silent){
     return(message(glue(msg, .envir=env)))

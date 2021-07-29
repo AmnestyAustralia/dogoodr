@@ -9,8 +9,7 @@ dg_api(
   out_class,
   clean_response = FALSE,
   query_param = list(),
-  process_pagination = FALSE,
-  ...
+  process_pagination = FALSE
 )
 }
 \arguments{
@@ -18,16 +17,18 @@ dg_api(
 
 \item{out_class}{class to use for the parse_response request}
 
-\item{clean_response}{whether to run parse_response on the request, or}
+\item{clean_response}{whether to run parse_response on the request}
 
-\item{...}{}
+\item{query_param}{URL parameters to send as part of the request}
+
+\item{process_pagination}{if there are multiple response pages, should whether to send multiple requests}
 }
 \value{
-
+a response list
 }
 \description{
 Lower level function used by functions with dg_ prefix.
 }
 \examples{
-dg_api(endpoint="activity_feed", out_class="", clean_response=TRUE, query_param=, process_pagination=FALSE)
+dg_api(endpoint="action-log-feed", out_class="actionfeed", query_param = list(campaign_ids=5618), clean_response=TRUE, process_pagination=TRUE)
 }
