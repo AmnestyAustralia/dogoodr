@@ -54,12 +54,17 @@ parse_starting_with <- function(selected_arg){
 #' @importFrom lubridate seconds today days weeks ymd_hms
 first_moment <- function(day){ day + lubridate::seconds(1) }
 #' @describeIn first_moment returns first moment of the current day
+#' @export
 this_morning <- function(){ first_moment(lubridate::today()) }
 #' @describeIn first_moment returns first moment n days ago
+#' @export
 days_ago <- function(n){ first_moment(lubridate::today()-lubridate::days(n)) }
 #' @describeIn first_moment returns first moment yesterday
+#' @export
 yesterday <- function(){ days_ago(1) }
 #' @describeIn first_moment returns first moment n weeks ago
+#' @export
 weeks_ago <- function(n){ first_moment(lubridate::today()-lubridate::weeks(n)) }
 #' @describeIn first_moment returns first moment of the common era
+#' @export
 ever <- function(){ lubridate::ymd_hms("0001-01-01T00:00:01") }
