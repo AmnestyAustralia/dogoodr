@@ -162,11 +162,11 @@ stack_lists <- function(l){
 #' @param x response list
 #' @return rectangle with count, next, previous values stored as attributes
 #' @importFrom purrr map_dfr
-#' @importFrom rlang exec set_attrs
+#' @importFrom rlang exec
 stack_results <- function(x){
   x.results <- x$results
   x.meta <- flat_values(x)
   x.df <- purrr::map_dfr(x.results, stack_lists)
-  x.df.w_meta <- rlang::exec(rlang::set_attrs, !!!c(list(.x=x.df), x.meta))
+  x.df.w_meta <- rlang::exec(structure, !!!c(list(.Data=x.df), x.meta))
   x.df.w_meta
 }
