@@ -36,9 +36,9 @@ encode_time_param <- function(tm){
 
 parse_starting_with <- function(selected_arg){
   if(selected_arg == "earliest"){
-    return("-created")
-  } else {
     return("created")
+  } else {
+    return("-created")
   }
 }
 
