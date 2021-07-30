@@ -27,7 +27,7 @@ tibble with nested columns for campaign, action, form_data
 Returns a feed the latest action log entries for the entire account. It includes the campaign, action, and form data submitted by the supporter.
 }
 \details{
-Useful convenience functions for 'since' argument include ever() which returns the first second of the CE, this_morning() which returns the first second of today first_moment() which returns the first second of any day, yesterday(), days_ago(), weeks_ago() which behave similarly.
+Useful convenience functions for 'since' argument are documented with the \code{\link[=first_moment]{first_moment()}} function.
 }
 \examples{
 minimum_time <- lubridate::now() - lubridate::days(5)

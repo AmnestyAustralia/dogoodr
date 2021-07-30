@@ -42,6 +42,6 @@ Convenience functions dg_actions "since" argument
 
 \item \code{weeks_ago}: returns first moment n weeks ago
 
-\item \code{ever}: returns first moment of the common era
+\item \code{ever}: returns first moment of the year 2000
 }}
 

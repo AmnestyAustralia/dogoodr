@@ -2,7 +2,7 @@
 #'
 #' Returns a feed the latest action log entries for the entire account. It includes the campaign, action, and form data submitted by the supporter.
 #'
-#' Useful convenience functions for 'since' argument include ever() which returns the first second of the CE, this_morning() which returns the first second of today first_moment() which returns the first second of any day, yesterday(), days_ago(), weeks_ago() which behave similarly.
+#' Useful convenience functions for 'since' argument are documented with the [first_moment()] function.
 #'
 #' @param since time object representing the earliest action to be returned
 #' @param campaign_id vector of campaign id integers to be returned
@@ -65,6 +65,6 @@ yesterday <- function(){ days_ago(1) }
 #' @describeIn first_moment returns first moment n weeks ago
 #' @export
 weeks_ago <- function(n){ first_moment(lubridate::today()-lubridate::weeks(n)) }
-#' @describeIn first_moment returns first moment of the common era
+#' @describeIn first_moment returns first moment of the year 2000
 #' @export
-ever <- function(){ lubridate::ymd_hms("0001-01-01T00:00:01") }
+ever <- function(){ lubridate::ymd_hms("2000-01-01T00:00:01") }
