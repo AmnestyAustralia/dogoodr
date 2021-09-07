@@ -49,6 +49,7 @@ process_pages <- function(parsed_response, max_requests=NULL, silent=FALSE, ...)
   results_count <- attr(parsed_response, "count")
   if(!is.null(next_page_url)){
     query_params <- url_args(next_page_url)
+    query_params[["since"]] <- stringr::str_replace_all(query_params$since, "%3A", ":")
     if(query_params$page==2) polite_message("Request returned first 100 of {results_count} total records.\nProcessing remaining records with {ceiling(results_count/100)-1} additional requests.\n", silent=silent)
     query_params.chr <- paste0(names(query_params), '=', query_params, collapse="&")
     polite_message("Getting /?{query_params.chr}", silent=silent)
