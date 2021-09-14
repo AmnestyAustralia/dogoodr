@@ -13,5 +13,6 @@ stack_results(x)
 rectangle with count, next, previous values stored as attributes
 }
 \description{
-Meta includes count, next, previous, which are provided as top level "flat" values in the response json.
+Meta includes count, next, previous, which are provided as top level "flat"
+values in the response json.
 }

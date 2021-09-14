@@ -13,8 +13,8 @@ dg_unnest(x)
 wider table
 }
 \description{
-Used to turn columns containing tables (eg. campaign, action, form_data), each of which may have different dimensions, into wider tables with new columns using names with the format prior_colname.colname_of_nested_table eg. action turns into action.id and action.title
-}
-\examples{
-
+Used to turn columns containing tables (eg. campaign, action, form_data),
+each of which may have different dimensions, into wider tables with new
+columns using names with the format prior_colname.colname_of_nested_table eg.
+action turns into action.id and action.title
 }
