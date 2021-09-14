@@ -13,5 +13,6 @@ stack_lists(l)
 a tibble
 }
 \description{
-Requires a list of lists as an input. Tries to turn sublists into lists as well.
+Requires a list of lists as an input. Tries to turn sublists into lists as
+well.
 }

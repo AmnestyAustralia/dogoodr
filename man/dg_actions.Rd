@@ -16,20 +16,30 @@ dg_actions(
 
 \item{campaign_id}{vector of campaign id integers to be returned}
 
-\item{starting_with}{should the return list be arranged to start with the earliest or latest action}
+\item{starting_with}{should the return list be arranged to start with the
+earliest or latest action}
 
-\item{process_pagination}{if TRUE function will make several requests to download each page of actions, or should it only return the first 100}
+\item{process_pagination}{if TRUE function will make several requests to
+download each page of actions, or should it only return the first 100}
 }
 \value{
 tibble with nested columns for campaign, action, form_data
 }
 \description{
-Returns a feed the latest action log entries for the entire account. It includes the campaign, action, and form data submitted by the supporter.
+Returns a feed the latest action log entries for the entire account. It
+includes the campaign, action, and form data submitted by the supporter.
 }
 \details{
-Useful convenience functions for 'since' argument are documented with the \code{\link[=first_moment]{first_moment()}} function.
+Useful convenience functions for 'since' argument are documented with the
+\code{\link[=first_moment]{first_moment()}} function.
 }
 \examples{
 minimum_time <- lubridate::now() - lubridate::days(5)
-dg_actions(since=minimum_time, campaign_id=5618, starting_with="latest", process_pagination=FALSE)
+
+dg_actions(
+  since = minimum_time,
+  campaign_id = 5618,
+  starting_with = "latest",
+  process_pagination = FALSE
+)
 }

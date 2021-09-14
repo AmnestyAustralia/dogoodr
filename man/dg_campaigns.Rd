@@ -10,5 +10,6 @@ dg_campaigns()
 a tibble of the org's dogooder campaigns
 }
 \description{
-Returns information about all campaigns in an account. Information includes title, description, urls, actions, etc.
+Returns information about all campaigns in an account. Information includes
+title, description, urls, actions, etc.
 }

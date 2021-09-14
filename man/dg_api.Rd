@@ -21,7 +21,8 @@ dg_api(
 
 \item{query_param}{URL parameters to send as part of the request}
 
-\item{process_pagination}{if there are multiple response pages, should whether to send multiple requests}
+\item{process_pagination}{if there are multiple response pages, should
+whether to send multiple requests}
 }
 \value{
 a response list
@@ -30,5 +31,11 @@ a response list
 Lower level function used by functions with dg_ prefix.
 }
 \examples{
-dg_api(endpoint="action-log-feed", out_class="actionfeed", query_param = list(campaign_ids=5618), clean_response=TRUE, process_pagination=TRUE)
+dg_api(
+  endpoint = "action-log-feed",
+  out_class = "actionfeed",
+  query_param = list(campaign_ids = 5618),
+  clean_response = TRUE,
+  process_pagination = TRUE
+)
 }

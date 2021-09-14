@@ -8,8 +8,8 @@
 #'
 #' @return a console log
 #' @importFrom glue glue
-polite_message <- function(msg, silent=TRUE, env=parent.frame()){
-  if(!silent){
-    return(message(glue(msg, .envir=env)))
+polite_message <- function(msg, silent = TRUE, env = parent.frame()) {
+  if (!silent) {
+    return(message(glue(msg, .envir = env)))
   }
 }
