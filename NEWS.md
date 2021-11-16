@@ -1,5 +1,7 @@
 # dogoodr (development version)
 
+* `dg_unnest()` previously performed some redundant additional cleaning on the un-nested names. This appeared to duplicate the `tidyr::unnest()` renaming rules so it has been removed. There may be some edge cases that were missed, so watch out!
+
 # dogoodr 0.1.0
 
 * Initial release.
