@@ -1,3 +1,5 @@
+#' @importFrom magrittr %>%
+#' @importFrom glue glue
 #' @keywords internal
 "_PACKAGE"
 
