@@ -10,7 +10,6 @@ Description: Interact directly with the 'Do Gooder' <https://dogooder.co/>
     API from R.
 License: GPL (>= 3)
 Imports:
-    data.table,
     dplyr,
     glue,
     httr,

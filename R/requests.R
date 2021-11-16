@@ -201,19 +201,18 @@ deeply_listed_values <- function(x) x[purrr::map_int(x, purrr::vec_depth) > 2]
 #' well.
 #'
 #' @param l a list where each item is a list, which will become a row
-#' @importFrom data.table rbindlist
 #' @importFrom purrr map
 #' @importFrom tibble as_tibble
 #' @return a tibble
 stack_lists <- function(l) {
   df.flat <- suppressWarnings(
-    data.table::rbindlist(list(flat_values(l)), use.names = TRUE, fill = TRUE)
+   dplyr::bind_rows(list(flat_values(l)))
   )
 
   df.sub_dfs <-
     purrr::map(
       shallow_listed_values(l),
-      ~ list(data.table::rbindlist(list(.x), use.names = TRUE, fill = TRUE))
+      ~ list(dplyr::bind_rows(list(.x)))
     )
 
   tibble::as_tibble(c(df.flat, df.sub_dfs))
