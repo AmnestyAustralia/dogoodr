@@ -1,11 +1,10 @@
 Package: dogoodr
 Title: Interface to the 'Do Gooder' API
 Version: 0.1.0.9000
-Authors@R: 
-    person(given = "Mark",
-           family = "Brisbane",
-           role = c("aut", "cre"),
-           email = "mark.brisbane@amnesty.org.au")
+Authors@R: c(
+    person("Danny", "Smith", , "danny@gorcha.org", role = c("aut", "cre")),
+    person("Mark", "Brisbane", , "mark.brisbane@amnesty.org.au", role = "aut")
+  )
 Description: Interact directly with the 'Do Gooder' <https://dogooder.co/>
     API from R.
 License: GPL (>= 3)
