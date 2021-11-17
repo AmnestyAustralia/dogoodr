@@ -19,12 +19,14 @@
 #' @examples
 #' minimum_time <- lubridate::now() - lubridate::days(5)
 #'
+#' \dontrun{
 #' dg_actions(
 #'   since = minimum_time,
 #'   campaign_id = 5618,
 #'   starting_with = "latest",
 #'   process_pagination = FALSE
 #' )
+#' }
 dg_actions <- function(since = this_morning(),
                        campaign_id = NULL,
                        starting_with = c("earliest", "latest"),

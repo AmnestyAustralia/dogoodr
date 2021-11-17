@@ -31,6 +31,7 @@ a response list
 Lower level function used by functions with dg_ prefix.
 }
 \examples{
+\dontrun{
 dg_api(
   endpoint = "action-log-feed",
   out_class = "actionfeed",
@@ -38,4 +39,5 @@ dg_api(
   clean_response = TRUE,
   process_pagination = TRUE
 )
+}
 }

@@ -12,6 +12,7 @@
 #' @export
 #' @importFrom httr modify_url add_headers GET stop_for_status http_type
 #' @examples
+#' \dontrun{
 #' dg_api(
 #'   endpoint = "action-log-feed",
 #'   out_class = "actionfeed",
@@ -19,6 +20,7 @@
 #'   clean_response = TRUE,
 #'   process_pagination = TRUE
 #' )
+#' }
 dg_api <- function(endpoint,
                    out_class,
                    clean_response = FALSE,
@@ -173,8 +175,9 @@ parse_response <- function(x) {
 #' @importFrom dplyr mutate
 #' @importFrom lubridate ymd_hms
 parse_response.actionfeed <- function(x) {
-  stack_results(x) %>%
-    dplyr::mutate(created = lubridate::ymd_hms(created))
+  out <- stack_results(x)
+  out$created <- lubridate::ymd_hms(out$created)
+  out
 }
 
 parse_response.campaigns <- function(x) {

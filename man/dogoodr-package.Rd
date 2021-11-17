@@ -9,7 +9,12 @@
 Interact directly with the 'Do Gooder' <https://dogooder.co/> API from R.
 }
 \author{
-\strong{Maintainer}: Mark Brisbane \email{mark.brisbane@amnesty.org.au}
+\strong{Maintainer}: Danny Smith \email{danny@gorcha.org}
+
+Authors:
+\itemize{
+  \item Mark Brisbane \email{mark.brisbane@amnesty.org.au}
+}
 
 }
 \keyword{internal}

@@ -17,7 +17,9 @@ Imports:
     magrittr,
     purrr,
     rlang,
-    tibble
+    stringr,
+    tibble,
+    tidyr
 Suggests: 
     testthat
 Encoding: UTF-8

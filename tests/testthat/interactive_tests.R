@@ -1,8 +1,8 @@
-devtools::load_all(here::here())
+library(dogoodr)
 
-Sys.setenv("DG_SUBDOMAIN" = rstudioapi::askForPassword("https://[THIS].good.do/developer/"))
-browseURL(glue("https://{Sys.getenv('DG_SUBDOMAIN')}.good.do/developer/"))
-Sys.setenv("DG_TOKEN" = rstudioapi::askForPassword("Token ******..."))
+# Sys.setenv("DG_SUBDOMAIN" = rstudioapi::askForPassword("https://[THIS].good.do/developer/"))
+# browseURL(glue("https://{Sys.getenv('DG_SUBDOMAIN')}.good.do/developer/"))
+# Sys.setenv("DG_TOKEN" = rstudioapi::askForPassword("Token ******..."))
 
 campaigns <- dg_api(endpoint = "campaigns", out_class = "campaigns", clean_response = TRUE)
 View(campaigns)
