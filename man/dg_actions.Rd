@@ -8,7 +8,8 @@ dg_actions(
   since = this_morning(),
   campaign_id = NULL,
   starting_with = c("earliest", "latest"),
-  process_pagination = FALSE
+  process_pagination = FALSE,
+  max_requests = Inf
 )
 }
 \arguments{

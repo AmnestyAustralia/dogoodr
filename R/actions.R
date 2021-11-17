@@ -30,7 +30,8 @@
 dg_actions <- function(since = this_morning(),
                        campaign_id = NULL,
                        starting_with = c("earliest", "latest"),
-                       process_pagination = FALSE) {
+                       process_pagination = FALSE,
+                       max_requests = Inf) {
 
   request_params <-
     list(
@@ -45,7 +46,8 @@ dg_actions <- function(since = this_morning(),
     out_class = "actionfeed",
     clean_response = TRUE,
     query_param = request_params,
-    process_pagination = process_pagination
+    process_pagination = process_pagination,
+    max_requests = max_requests
   )
 }
 

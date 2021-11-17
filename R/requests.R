@@ -8,6 +8,8 @@
 #' @param query_param URL parameters to send as part of the request
 #' @param process_pagination if there are multiple response pages, should
 #'   whether to send multiple requests
+#' @param max_requests stops early if it exceeds this number
+#' @param silent whether to print request details to the console
 #' @return a response list
 #' @export
 #' @importFrom httr modify_url add_headers GET stop_for_status http_type
@@ -25,107 +27,95 @@ dg_api <- function(endpoint,
                    out_class,
                    clean_response = FALSE,
                    query_param = list(),
-                   process_pagination = FALSE) {
+                   process_pagination = TRUE,
+                   max_requests = Inf,
+                   silent = FALSE) {
 
-  path <- glue("/api/{endpoint}")
-  url <- httr::modify_url(glue("http://{dogooder_subdomain()}.good.do"), path = path)
-  resp <- httr::GET(
-    url,
-    query = query_param,
-    httr::add_headers(Authorization = dogooder_token())
+  path <- paste0("/api/", endpoint)
+  url <- httr::modify_url(
+    paste0("http://", dogooder_subdomain(), ".good.do"),
+    path = path,
+    query = query_param
   )
 
-  # Check HTTP Status
-  httr::stop_for_status(resp)
+  out <- list()
+  page <- 1
 
-  # Check response is in JSON
-  if (httr::http_type(resp) != "application/json") {
-    stop("API did not return json", call. = FALSE)
-  }
+  polite_message(
+    "Performing dogoodr request...",
+    silent = silent
+  )
 
-  parsed_response <- response_parse(response = resp, out_class = out_class)
-
-  if (!is.null(parsed_response$error)) {
-    stop(
-      "The API returned an error: ",
-      parsed_response$error$code, " - ", parsed_response$error$info,
-      call. = FALSE
+  while(TRUE) {
+    resp <- httr::GET(
+      url,
+      httr::add_headers(Authorization = dogooder_token())
     )
-  }
 
-  if (clean_response) {
-    parsed_response <- parse_response(parsed_response)
-  }
+    # Check HTTP Status
+    httr::stop_for_status(resp)
 
-  if (clean_response & process_pagination) {
-    parsed_response <-
-      process_pages(parsed_response,
-                    endpoint = endpoint,
-                    out_class = out_class)
-  }
+    # Check response is in JSON
+    if (httr::http_type(resp) != "application/json") {
+      stop("API did not return json", call. = FALSE)
+    }
 
-  parsed_response
-}
-
-#' Process remotely paginated dogooder data
-#'
-#' @param parsed_response previous response to pull the 'next' value from
-#' @param max_requests stops early if it exceeds this number
-#' @param silent whether to print request details to the console
-#' @param ... other parameters for the next request
-#' @importFrom dplyr bind_rows
-#' @importFrom rlang dots_list exec
-#' @return parsed responses binded together
-process_pages <- function(parsed_response, max_requests = NULL, silent = FALSE, ...) {
-
-  next_page_url <- attr(parsed_response, "next")
-  results_count <- attr(parsed_response, "count")
-
-  if (!is.null(next_page_url)) {
-    query_params <- url_args(next_page_url)
-    query_params[["since"]] <- stringr::str_replace_all(query_params$since, "%3A", ":")
-
-    if (query_params$page == 2)
-      polite_message(
-        "Request returned first 100 of {results_count} total records.\nProcessing remaining records with {ceiling(results_count/100)-1} additional requests.\n",
-        silent = silent
+    parsed_response <- response_parse(response = resp, out_class = out_class)
+    if (!is.null(parsed_response$error)) {
+      stop(
+        "The API returned an error: ",
+        parsed_response$error$code, " - ", parsed_response$error$info,
+        call. = FALSE
       )
-    query_params.chr <- paste0(names(query_params), "=", query_params, collapse = "&")
-    polite_message("Getting /?{query_params.chr}", silent = silent)
+    }
 
-    request_arg_list <- c(
-      list(query_param = query_params, clean_response = TRUE),
-      rlang::dots_list(...)
-    )
-    parsed_response.next_page <- rlang::exec(dg_api, !!!request_arg_list)
+    if (clean_response) {
+      out <- dplyr::bind_rows(out, parse_response(parsed_response))
+    } else {
+      out <- c(out, list(parsed_response))
+    }
+    if (!is.null(parsed_response$`next`)) {
+      if (process_pagination) {
+        if (page == 1) {
+          polite_message(
+            "Request returned first 100 of {parsed_response$count} total records. Performing {floor(parsed_response$count / 100) - 1} additional requests.",
+            silent = silent
+          )
+        }
 
-    attr(parsed_response, "next") <- NULL
-    attr(parsed_response, "count") <- NULL
+        if (page >= max_requests) {
+          polite_message(
+            "Reached {max_requests} max requests. Returning {nrow(out)} records retrieved so far.",
+            silent = silent
+          )
+          break()
+        }
 
-    merged_responses <- dplyr::bind_rows(parsed_response, parsed_response.next_page)
-    attr(merged_responses, "next") <- attr(parsed_response.next_page, "next")
-    attr(merged_responses, "count") <- attr(parsed_response.next_page, "count")
-
-    if (!is.null(max_requests)) {
-      if (query_params$page == max_requests) {
         polite_message(
-          "Max requests reached, returning data retrieved so far.\n",
+          "{as.character(Sys.time())}: request {page + 1} / {floor(parsed_response$count / 100)}, records {((100 * page) + 1)}-{(100 * (page + 1))} / {parsed_response$count}",
           silent = silent
         )
-        return(merged_responses)
+
+        page <- page + 1
+        url <- curl::curl_unescape(parsed_response$`next`)
+      } else {
+        warning(
+          "Request returned first 100 of ", parsed_response$count, " total records.\n",
+          "`process_pagination` is set to `FALSE`, so remaining records will not be loaded.",
+          call. = FALSE
+        )
+        break
       }
     } else {
-      next_page_arg_list <-
-        c(
-          list(parsed_response = merged_responses, max_requests = max_requests),
-          rlang::dots_list(...)
-        )
-      rlang::exec(process_pages, !!!next_page_arg_list)
+      polite_message(
+        "Request returned {parsed_response$count} total records.",
+        silent = silent
+      )
+      break
     }
-  } else {
-    polite_message("Pagination processing completed.\n", silent = silent)
-    return(parsed_response)
   }
+
+  out
 }
 
 #' Extract a URLs arguments for new requests
