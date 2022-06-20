@@ -78,7 +78,7 @@ dg_api <- function(endpoint,
       if (process_pagination) {
         if (page == 1) {
           polite_message(
-            "Request returned first 100 of {parsed_response$count} total records. Performing {floor(parsed_response$count / 100) - 1} additional requests.",
+            "Request returned first 100 of {parsed_response$count} total records. Performing {ceiling(parsed_response$count / 100) - 1} additional requests.",
             silent = silent
           )
         }
@@ -92,7 +92,7 @@ dg_api <- function(endpoint,
         }
 
         polite_message(
-          "{as.character(Sys.time())}: request {page + 1} / {floor(parsed_response$count / 100)}, records {((100 * page) + 1)}-{(100 * (page + 1))} / {parsed_response$count}",
+          "{as.character(Sys.time())}: request {page + 1} / {ceiling(parsed_response$count / 100)}, records {((100 * page) + 1)}-{min(100 * (page + 1), parsed_response$count)} / {parsed_response$count}",
           silent = silent
         )
 
