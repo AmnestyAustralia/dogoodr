@@ -1,6 +1,6 @@
 #' Make a DG API Request
 #'
-#' Lower level function used by functions with dg_ prefix.
+#' Lower level function used by functions with `dg_` prefix.
 #'
 #' @param endpoint name of endpoint
 #' @param out_class class to use for the parse_response request
@@ -9,7 +9,6 @@
 #' @param process_pagination if there are multiple response pages, should
 #'   whether to send multiple requests
 #' @param max_requests stops early if it exceeds this number
-#' @param silent whether to print request details to the console
 #' @return a response list
 #' @export
 #' @examples
@@ -27,8 +26,7 @@ dg_api <- function(endpoint,
                    clean_response = FALSE,
                    query_param = list(),
                    process_pagination = TRUE,
-                   max_requests = Inf,
-                   silent = FALSE) {
+                   max_requests = Inf) {
 
   path <- paste0("/api/", endpoint)
   url <- httr::modify_url(

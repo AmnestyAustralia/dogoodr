@@ -10,8 +10,7 @@ dg_api(
   clean_response = FALSE,
   query_param = list(),
   process_pagination = TRUE,
-  max_requests = Inf,
-  silent = FALSE
+  max_requests = Inf
 )
 }
 \arguments{
@@ -27,14 +26,12 @@ dg_api(
 whether to send multiple requests}
 
 \item{max_requests}{stops early if it exceeds this number}
-
-\item{silent}{whether to print request details to the console}
 }
 \value{
 a response list
 }
 \description{
-Lower level function used by functions with dg_ prefix.
+Lower level function used by functions with \code{dg_} prefix.
 }
 \examples{
 \dontrun{
