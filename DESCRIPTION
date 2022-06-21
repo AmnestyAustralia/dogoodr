@@ -1,6 +1,6 @@
 Package: dogoodr
 Title: Interface to the 'Do Gooder' API
-Version: 0.1.0.9001
+Version: 0.2.0
 Authors@R: c(
     person("Danny", "Smith", , "danny@gorcha.org", role = c("aut", "cre")),
     person("Mark", "Brisbane", , "mark.brisbane@amnesty.org.au", role = "aut")
