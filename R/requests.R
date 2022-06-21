@@ -12,7 +12,6 @@
 #' @param silent whether to print request details to the console
 #' @return a response list
 #' @export
-#' @importFrom httr modify_url add_headers GET stop_for_status http_type
 #' @examples
 #' \dontrun{
 #' dg_api(
@@ -41,10 +40,7 @@ dg_api <- function(endpoint,
   out <- list()
   page <- 1
 
-  polite_message(
-    "Performing dogoodr request...",
-    silent = silent
-  )
+  cli::cli_progress_step("Performing initial dogoodr request...")
 
   while(TRUE) {
     resp <- httr::GET(
@@ -57,15 +53,16 @@ dg_api <- function(endpoint,
 
     # Check response is in JSON
     if (httr::http_type(resp) != "application/json") {
-      stop("API did not return json", call. = FALSE)
+      cli_abort("Do Gooder API did not return json.")
     }
 
     parsed_response <- response_parse(response = resp, out_class = out_class)
     if (!is.null(parsed_response$error)) {
-      stop(
-        "The API returned an error: ",
-        parsed_response$error$code, " - ", parsed_response$error$info,
-        call. = FALSE
+      cli_abort(
+        c(
+          "Do Gooder API error {.val {parsed_response$error$code}}.",
+          "x" = "{parsed_response$error$info}"
+        )
       )
     }
 
@@ -77,40 +74,54 @@ dg_api <- function(endpoint,
     if (!is.null(parsed_response$`next`)) {
       if (process_pagination) {
         if (page == 1) {
-          polite_message(
-            "Request returned first 100 of {parsed_response$count} total records. Performing {ceiling(parsed_response$count / 100) - 1} additional requests.",
-            silent = silent
+          cli::cli_progress_done()
+          total_requests <- ceiling(parsed_response$count / 100)
+          cli::cli_alert_info("Initial request returned 100 of {parsed_response$count} total records.")
+          if (total_requests > max_requests) {
+            cli::cli_alert_warning (
+              "Requesting all pages would exceed {.arg max_requests}. {max_requests} of {total_requests} page{?s} will be retrieved."
+            )
+            total_requests <- max_requests
+          }
+          # cli::cli_alert_info("Performing {total_requests - 1} additional request{?s}.")
+          # cli::cli_progress_step(
+          #   paste(
+          #     "Request {page + 1} / {total_requests}, records {((100 * page) + 1)}-{min(100 * (page + 1), parsed_response$count)} / {parsed_response$count}"
+          #   ),
+          #   msg_done = "Request returned {parsed_response$count} total records."
+          # )
+          cli::cli_progress_bar(
+            "Requesting additional pages",
+            total = total_requests - 1,
+            type = "tasks",
+            format_done = "{.alert-success {cli::pb_name}| {cli::pb_current}/{cli::pb_total} {.timestamp {cli::pb_elapsed}}}",
+            format_failed = "{.alert-danger {cli::pb_name}| {cli::pb_current}/{cli::pb_total} {.timestamp {cli::pb_elapsed}}}",
+            clear = FALSE
           )
+        } else {
+          cli::cli_progress_update()
         }
 
         if (page >= max_requests) {
-          polite_message(
-            "Reached {max_requests} max requests. Returning {nrow(out)} records retrieved so far.",
-            silent = silent
-          )
+          cli::cli_progress_done()
+          cli::cli_alert_success("Retrieved {nrow(out)} record{?s}.")
           break()
         }
-
-        polite_message(
-          "{as.character(Sys.time())}: request {page + 1} / {ceiling(parsed_response$count / 100)}, records {((100 * page) + 1)}-{min(100 * (page + 1), parsed_response$count)} / {parsed_response$count}",
-          silent = silent
-        )
 
         page <- page + 1
         url <- curl::curl_unescape(parsed_response$`next`)
       } else {
-        warning(
-          "Request returned first 100 of ", parsed_response$count, " total records.\n",
-          "`process_pagination` is set to `FALSE`, so remaining records will not be loaded.",
-          call. = FALSE
+        cli::cli_alert_info("Initial request returned 100 of {parsed_response$count} total records.")
+        cli::cli_alert_warning(
+          "{.arg process_pagination} is set to {.code FALSE}, remaining records will not be retrieved."
         )
+        cli::cli_alert_success("Retrieved {nrow(out)} record{?s}.")
+
         break
       }
     } else {
-      polite_message(
-        "Request returned {parsed_response$count} total records.",
-        silent = silent
-      )
+      cli::cli_progress_done()
+      cli::cli_alert_success("Retrieved {nrow(out)} record{?s}.")
       break
     }
   }
@@ -118,30 +129,10 @@ dg_api <- function(endpoint,
   out
 }
 
-#' Extract a URLs arguments for new requests
-#'
-#' @param url character item with arguments embedded in it
-#' @return a list of arguments
-url_args <- function(url) {
-  arg.chrs <-
-    stringr::str_extract(url, "(?<=/\\?).*?$") %>%
-    stringr::str_split("&") %>%
-    magrittr::extract2(1) %>%
-    stringr::str_split("=")
-
-  arg.list <-
-    purrr::map(arg.chrs, ~ .x[[2]]) %>%
-    rlang::set_names(nm = purrr::map_chr(arg.chrs, ~ .x[[1]]))
-
-  arg.list
-}
-
 #' Parse http response json to a list
 #'
 #' @param response http response in json format
 #' @param out_class class to assign the response list
-#' @importFrom httr content
-#' @importFrom jsonlite fromJSON
 #' @return response list
 response_parse <- function(response, out_class) {
   response_text <- httr::content(x = response, as = "text", encoding = "UTF-8")
@@ -162,8 +153,6 @@ parse_response <- function(x) {
 #'
 #' @param x response list
 #' @return tibble
-#' @importFrom dplyr mutate
-#' @importFrom lubridate ymd_hms
 parse_response.actionfeed <- function(x) {
   out <- stack_results(x)
   out$created <- lubridate::ymd_hms(out$created)
@@ -179,7 +168,6 @@ parse_response.campaigns <- function(x) {
 #' Returns list items within a level that aren't lists
 #'
 #' @param x a list
-#' @importFrom purrr vec_depth
 #' @return list items without sublists
 flat_values <- function(x) {
   x[purrr::map_int(x, purrr::vec_depth) < 2]
@@ -194,8 +182,6 @@ deeply_listed_values <- function(x) x[purrr::map_int(x, purrr::vec_depth) > 2]
 #' well.
 #'
 #' @param l a list where each item is a list, which will become a row
-#' @importFrom purrr map
-#' @importFrom tibble as_tibble
 #' @return a tibble
 stack_lists <- function(l) {
   df.flat <- suppressWarnings(
@@ -211,15 +197,13 @@ stack_lists <- function(l) {
   tibble::as_tibble(c(df.flat, df.sub_dfs))
 }
 
-#' Adds dogooder metadata to a response rectangle
+#' Adds Do Gooder metadata to a response rectangle
 #'
 #' Meta includes count, next, previous, which are provided as top level "flat"
 #' values in the response json.
 #'
 #' @param x response list
 #' @return rectangle with count, next, previous values stored as attributes
-#' @importFrom purrr map_dfr
-#' @importFrom rlang exec
 stack_results <- function(x) {
   x.results <- x$results
   x.meta <- flat_values(x)

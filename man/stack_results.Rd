@@ -2,7 +2,7 @@
 % Please edit documentation in R/requests.R
 \name{stack_results}
 \alias{stack_results}
-\title{Adds dogooder metadata to a response rectangle}
+\title{Adds Do Gooder metadata to a response rectangle}
 \usage{
 stack_results(x)
 }

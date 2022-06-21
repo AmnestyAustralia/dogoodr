@@ -4,6 +4,8 @@
 
 * Code for processing paginated requests has been rewritten for clearer messaging and better performance.
 
+* All messages, errors and warnings now use the cli package.
+
 # dogoodr 0.1.0
 
 * Initial release.

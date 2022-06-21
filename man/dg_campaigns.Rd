@@ -7,7 +7,7 @@
 dg_campaigns()
 }
 \value{
-a tibble of the org's dogooder campaigns
+a tibble of the org's Do Gooder campaigns
 }
 \description{
 Returns information about all campaigns in an account. Information includes

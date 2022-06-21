@@ -34,12 +34,13 @@ dg_actions <- function(since = this_morning(),
                        max_requests = Inf) {
 
   request_params <-
-    list(
-      since = encode_time_param(since),
-      campaign = campaign_id,
-      ordering = parse_starting_with(match.arg(starting_with))
-    ) %>%
-    purrr::compact()
+    purrr::compact(
+      list(
+        since = encode_time_param(since),
+        campaign = campaign_id,
+        ordering = parse_starting_with(match.arg(starting_with))
+      )
+    )
 
   dg_api(
     endpoint = "action-log-feed",
@@ -51,11 +52,18 @@ dg_actions <- function(since = this_morning(),
   )
 }
 
-encode_time_param <- function(tm) {
+encode_time_param <- function(tm,
+                              arg = rlang::caller_arg(tm),
+                              call = rlang::caller_env()) {
   if (any(c("POSIXct", "POSIXt") %in% class(tm))) {
     return(format(tm, "%Y-%m-%dT%H:%M:%S"))
+  } else if (is.null(tm)) {
+    return(NULL)
   } else {
-    stop("'since' value must be a time object")
+    cli_abort(
+      "{.arg {arg}} must be a time object, not {.cls {class(tm)}}.",
+      call = call
+    )
   }
 }
 
@@ -74,7 +82,6 @@ parse_starting_with <- function(selected_arg) {
 #'
 #' @return a datetime object
 #' @export
-#' @importFrom lubridate seconds today days weeks ymd_hms
 first_moment <- function(day) {
   day + lubridate::seconds(1)
 }
