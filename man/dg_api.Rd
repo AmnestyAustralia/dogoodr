@@ -9,7 +9,9 @@ dg_api(
   out_class,
   clean_response = FALSE,
   query_param = list(),
-  process_pagination = FALSE
+  process_pagination = TRUE,
+  max_requests = Inf,
+  silent = FALSE
 )
 }
 \arguments{
@@ -23,6 +25,10 @@ dg_api(
 
 \item{process_pagination}{if there are multiple response pages, should
 whether to send multiple requests}
+
+\item{max_requests}{stops early if it exceeds this number}
+
+\item{silent}{whether to print request details to the console}
 }
 \value{
 a response list
@@ -31,6 +37,7 @@ a response list
 Lower level function used by functions with dg_ prefix.
 }
 \examples{
+\dontrun{
 dg_api(
   endpoint = "action-log-feed",
   out_class = "actionfeed",
@@ -38,4 +45,5 @@ dg_api(
   clean_response = TRUE,
   process_pagination = TRUE
 )
+}
 }
