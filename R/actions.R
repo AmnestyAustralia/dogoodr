@@ -10,8 +10,10 @@
 #' @param campaign_id vector of campaign id integers to be returned
 #' @param starting_with should the return list be arranged to start with the
 #'   earliest or latest action
-#' @param process_pagination if TRUE function will make several requests to
-#'   download each page of actions, or should it only return the first 100
+#' @param process_pagination should additional pages of data be retrieved?
+#' @param page_size the number of records to retrieve in each request
+#' @param max_requests the maximum number of requests to perform when retrieving
+#'   additional pages of data
 #'
 #' @return tibble with nested columns for campaign, action, form_data
 #' @export
@@ -31,6 +33,7 @@ dg_actions <- function(since = this_morning(),
                        campaign_id = NULL,
                        starting_with = c("earliest", "latest"),
                        process_pagination = FALSE,
+                       page_size = 1000,
                        max_requests = Inf) {
 
   request_params <-
@@ -48,6 +51,7 @@ dg_actions <- function(since = this_morning(),
     clean_response = TRUE,
     query_param = request_params,
     process_pagination = process_pagination,
+    page_size = page_size,
     max_requests = max_requests
   )
 }

@@ -10,6 +10,7 @@ dg_api(
   clean_response = FALSE,
   query_param = list(),
   process_pagination = TRUE,
+  page_size = 1000,
   max_requests = Inf
 )
 }
@@ -22,10 +23,12 @@ dg_api(
 
 \item{query_param}{URL parameters to send as part of the request}
 
-\item{process_pagination}{if there are multiple response pages, should
-whether to send multiple requests}
+\item{process_pagination}{should additional pages of data be retrieved?}
 
-\item{max_requests}{stops early if it exceeds this number}
+\item{page_size}{the number of records to retrieve in each request}
+
+\item{max_requests}{the maximum number of requests to perform when retrieving
+additional pages of data}
 }
 \value{
 a response list

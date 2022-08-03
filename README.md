@@ -32,7 +32,7 @@ Returns a tibble of your account's Do Gooder campaigns. Includes campaign name, 
 
 **dg_actions()**
 
-Returns a tibble of actions matching your request arguments. Do Gooder's API paginates responses in chunks of 100, in order to recursively request all possible actions, use process_pagination=TRUE.
+Returns a tibble of actions matching your request arguments. Do Gooder's API paginates responses - in order to recursively request all possible actions, use `process_pagination = TRUE`. Use `page_size` to set the maximum number of records to return in each request.
 
 Returned tibble will include id, email address, subscribed_to_campaign, test, created, promotion_name, subscribed_to_organisation, and three nested data.tables (API returns these as nested JSON). Nested data.tables are campaign, action, form_data.
 
