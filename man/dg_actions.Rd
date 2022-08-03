@@ -9,6 +9,7 @@ dg_actions(
   campaign_id = NULL,
   starting_with = c("earliest", "latest"),
   process_pagination = FALSE,
+  page_size = 1000,
   max_requests = Inf
 )
 }
@@ -20,8 +21,12 @@ dg_actions(
 \item{starting_with}{should the return list be arranged to start with the
 earliest or latest action}
 
-\item{process_pagination}{if TRUE function will make several requests to
-download each page of actions, or should it only return the first 100}
+\item{process_pagination}{should additional pages of data be retrieved?}
+
+\item{page_size}{the number of records to retrieve in each request}
+
+\item{max_requests}{the maximum number of requests to perform when retrieving
+additional pages of data}
 }
 \value{
 tibble with nested columns for campaign, action, form_data

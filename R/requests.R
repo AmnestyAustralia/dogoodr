@@ -6,9 +6,10 @@
 #' @param out_class class to use for the parse_response request
 #' @param clean_response whether to run parse_response on the request
 #' @param query_param URL parameters to send as part of the request
-#' @param process_pagination if there are multiple response pages, should
-#'   whether to send multiple requests
-#' @param max_requests stops early if it exceeds this number
+#' @param process_pagination should additional pages of data be retrieved?
+#' @param page_size the number of records to retrieve in each request
+#' @param max_requests the maximum number of requests to perform when retrieving
+#'   additional pages of data
 #' @return a response list
 #' @export
 #' @examples
@@ -26,7 +27,12 @@ dg_api <- function(endpoint,
                    clean_response = FALSE,
                    query_param = list(),
                    process_pagination = TRUE,
+                   page_size = 1000,
                    max_requests = Inf) {
+
+  out <- list()
+  page <- 1
+  query_param$page_size <- page_size
 
   path <- paste0("/api/", endpoint)
   url <- httr::modify_url(
@@ -34,9 +40,6 @@ dg_api <- function(endpoint,
     path = path,
     query = query_param
   )
-
-  out <- list()
-  page <- 1
 
   cli::cli_progress_step("Performing initial dogoodr request...")
 
@@ -73,8 +76,8 @@ dg_api <- function(endpoint,
       if (process_pagination) {
         if (page == 1) {
           cli::cli_progress_done()
-          total_requests <- ceiling(parsed_response$count / 100)
-          cli::cli_alert_info("Initial request returned 100 of {parsed_response$count} total records.")
+          total_requests <- ceiling(parsed_response$count / page_size)
+          cli::cli_alert_info("Initial request returned {page_size} of {parsed_response$count} total records.")
           if (total_requests > max_requests) {
             cli::cli_alert_warning (
               "Requesting all pages would exceed {.arg max_requests}. {max_requests} of {total_requests} page{?s} will be retrieved."
@@ -84,7 +87,7 @@ dg_api <- function(endpoint,
           # cli::cli_alert_info("Performing {total_requests - 1} additional request{?s}.")
           # cli::cli_progress_step(
           #   paste(
-          #     "Request {page + 1} / {total_requests}, records {((100 * page) + 1)}-{min(100 * (page + 1), parsed_response$count)} / {parsed_response$count}"
+          #     "Request {page + 1} / {total_requests}, records {((page_size * page) + 1)}-{min(page_size * (page + 1), parsed_response$count)} / {parsed_response$count}"
           #   ),
           #   msg_done = "Request returned {parsed_response$count} total records."
           # )
@@ -109,7 +112,7 @@ dg_api <- function(endpoint,
         page <- page + 1
         url <- curl::curl_unescape(parsed_response$`next`)
       } else {
-        cli::cli_alert_info("Initial request returned 100 of {parsed_response$count} total records.")
+        cli::cli_alert_info("Initial request returned {page_size} of {parsed_response$count} total records.")
         cli::cli_alert_warning(
           "{.arg process_pagination} is set to {.code FALSE}, remaining records will not be retrieved."
         )
