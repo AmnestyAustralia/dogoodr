@@ -1,4 +1,4 @@
-# dogoodr (development version)
+# dogoodr 0.2.2
 
 * Use https instead of http for Do Gooder API calls.
 
