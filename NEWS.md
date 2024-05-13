@@ -1,3 +1,7 @@
+# dogoodr 0.2.2
+
+* Use https instead of http for Do Gooder API calls.
+
 # dogoodr 0.2.1
 
 * `dg_actions()` and `dg_api()` gain a `page_size` argument to specify the number of records retrieved per page from the Do Gooder API. Previously 100 records were retrieved per page, this now defaults to 1000.

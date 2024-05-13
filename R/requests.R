@@ -36,7 +36,7 @@ dg_api <- function(endpoint,
 
   path <- paste0("/api/", endpoint)
   url <- httr::modify_url(
-    paste0("http://", dogooder_subdomain(), ".good.do"),
+    paste0("https://", dogooder_subdomain(), ".good.do"),
     path = path,
     query = query_param
   )
